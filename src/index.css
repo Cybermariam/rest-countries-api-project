@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  --text: hsl(200, 15%, 8%);
+  --light-mode-input: hsl(0, 0%, 50%);
+  --bg: hsl(0, 0%, 99%);
+}
+.dark {
+  --dark-element: hsl(209, 23%, 22%);
+  --bg: hsl(207, 26%, 17%);
+  --text: hsl(0, 100%, 100%);
+}
+html,
+body,
+#root {
+  height: 100%;
+}
