@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar";
-
+import Search from "./components/Search";
 const App = () => {
   return (
     <div
@@ -8,7 +8,7 @@ const App = () => {
 "
     >
       <Navbar />
-      <p className="">Hello</p>
+      <Search />
     </div>
   );
 };

@@ -17,7 +17,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex justify-between p-4 items-center bg-(--bg) shadow-md">
+    <nav className="flex justify-between py-4 px-12 items-center bg-(--bg) shadow-md">
       <h1 className="text-2xl font-semibold">Where in the world? </h1>
       <div className="flex items-center space-x-2">
         <button onClick={toggleMode} className="">
