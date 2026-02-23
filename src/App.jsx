@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import Search from "./components/Search";
+import Countries from "./components/Countries";
 const App = () => {
   return (
     <div
@@ -8,7 +9,10 @@ const App = () => {
 "
     >
       <Navbar />
-      <Search />
+      <main className="container mx-auto px-4 md:px-8 lg:px-12">
+        <Search />
+        <Countries />
+      </main>
     </div>
   );
 };

@@ -15,7 +15,7 @@ const Search = () => {
   const regions = ["Africa", "America", "Asia", "Europe", "Oceania"];
 
   return (
-    <section className="p-10 flex md:items-center flex-col md:flex-row justify-between gap-10 ">
+    <section className="py-12 md:py-16 flex md:items-center flex-col md:flex-row justify-between gap-10">
       <div className="flex items-center relative  w-full md:w-[40%] ">
         <IoIosSearch className="absolute left-4 text-gray-400 " />
         <input
@@ -32,14 +32,14 @@ const Search = () => {
       <div className="relative w-60 ">
         <button
           onClick={handleIsOpen}
-          className="flex justify-between items-center  md:mt-0  px-6 py-3.5 rounded-md shadow-md w-full"
+          className="flex  justify-between  items-center  md:mt-0  px-6 py-3.5 rounded-md shadow-md w-full "
         >
           <span>{selected || "Filter by Region"}</span>
           <RiArrowDropDownLine />
         </button>
 
         {isOpen && (
-          <ul className="absolute top-full mt-1 left-0 z-10  w-full rounded-md py-2 shadow-md">
+          <ul className=" absolute top-full mt-1 left-0 z-50  w-full rounded-md py-2 shadow-md  bg-(--bg) text-(--text)">
             {regions.map((region) => {
               return (
                 <li
