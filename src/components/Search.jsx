@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
-const Search = () => {
-  const [search, setSearch] = useState("");
-
+const Search = ({ search, setSearch, region, setRegion }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
-
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
-  const regions = ["Africa", "America", "Asia", "Europe", "Oceania"];
+  const regions = ["Africa", "Americas", "Asia", "Europe", "Oceania"];
 
   return (
     <section className="py-12 md:py-16 flex md:items-center flex-col md:flex-row justify-between gap-10">
@@ -34,7 +30,7 @@ const Search = () => {
           onClick={handleIsOpen}
           className="flex  justify-between  items-center  md:mt-0  px-6 py-3.5 rounded-md shadow-md w-full "
         >
-          <span>{selected || "Filter by Region"}</span>
+          <span>{region || "Filter by Region"}</span>
           <RiArrowDropDownLine />
         </button>
 
@@ -45,7 +41,7 @@ const Search = () => {
                 <li
                   key={region}
                   onClick={() => {
-                    setSelected(region);
+                    setRegion(region);
                     setIsOpen(false);
                   }}
                   className="px-6 py-2 cursor-pointer text-sm"
