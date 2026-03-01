@@ -1,98 +1,117 @@
-import React from "react";
-import data from "../../data.json";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
 const CountryDetails = () => {
-  const country = data[21]; // replace later with useParams logic
+  const navigate = useNavigate();
+  const handleBackButton = () => {
+    navigate(-1);
+  };
+  const { cca3 } = useParams();
 
+  const [country, setCountry] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch(
+          ` https://restcountries.com/v3.1/alpha/${cca3}`,
+        );
+        if (!response.ok) {
+          throw new Error("country not found");
+        }
+        const data = await response.json();
+        setCountry(data[0]);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCountries();
+  }, [cca3]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+  if (!country) return <h2>Country not found</h2>;
+
+  const nativeName = country.name.nativeName
+    ? Object.values(country.name.nativeName)[0].common
+    : "N/A";
+
+  const currencies = country.currencies
+    ? Object.values(country.currencies)
+        .map((c) => c.name)
+        .join(", ")
+    : "N/A";
+
+  const languages = country.languages
+    ? Object.values(country.languages).join(", ")
+    : "N/A";
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#111517] px-6 md:px-16 lg:px-24 py-10 md:py-16">
-      {/* Back Button */}
-      <button className="flex items-center gap-2 px-8 py-2 bg-white shadow-md rounded-md mb-16 hover:scale-105 transition pointer">
-        <IoIosArrowRoundBack className="text-xl" />
-        <span className="text-sm font-medium">Back</span>
+    <>
+      <button
+        className="flex space-x-2 items-center mb-10 shadow-lg px-6 py-3 "
+        onClick={handleBackButton}
+      >
+        <IoIosArrowRoundBack />
+        <span>Back</span>
       </button>
 
-      {country && (
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-24">
-          {/* Flag */}
-          <div className="w-full lg:w-1/2">
-            <img
-              src={country.flag}
-              alt={country.name}
-              className="w-full h-65 md:h-87.5 object-cover shadow-lg"
-            />
+      <div>
+        <img src={country.flags?.svg} alt={country.name.common} />
+        <div>
+          <h3>{country.name.common}</h3>
+          <div>
+            <div>
+              <p>
+                <span> Native Name: </span>
+                <span>{nativeName}</span>
+              </p>
+
+              <p>
+                <span>Population: </span>
+                <span>{country.population?.toLocaleString()}</span>
+              </p>
+              <p>
+                <span> Region:</span>
+                <span>{country.region}</span>
+              </p>
+              <p>
+                <span> Sub Region: </span>
+                <span>{country.subregion}</span>
+              </p>
+
+              <p>
+                <span> Capital: </span>
+                <span>{country.capital?.[0]}</span>
+              </p>
+            </div>
+            <div>
+              <p>
+                <span>Top Level Domain:</span>
+                <span>{country.tld?.join(", ")}</span>
+              </p>
+              <p>
+                <span>Currencies:</span>
+                <span>{currencies}</span>
+              </p>
+              <p>
+                <span>Languages:</span>
+                <span>{languages}</span>
+              </p>
+            </div>
           </div>
-
-          {/* Details */}
-          <div className="w-full lg:w-1/2">
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-10">
-              {country.name}
-            </h1>
-
-            <div className="flex flex-col md:flex-row justify-between gap-10 mb-14">
-              {/* Left Info */}
-              <div className="space-y-3 text-sm">
-                <p>
-                  <span className="font-semibold">Native Name:</span>{" "}
-                  {country.nativeName}
-                </p>
-                <p>
-                  <span className="font-semibold">Population:</span>{" "}
-                  {country.population?.toLocaleString()}
-                </p>
-                <p>
-                  <span className="font-semibold">Region:</span>{" "}
-                  {country.region}
-                </p>
-                <p>
-                  <span className="font-semibold">Sub Region:</span>{" "}
-                  {country.subregion}
-                </p>
-                <p>
-                  <span className="font-semibold">Capital:</span>{" "}
-                  {country.capital}
-                </p>
-              </div>
-
-              {/* Right Info */}
-              <div className="space-y-3 text-sm">
-                <p>
-                  <span className="font-semibold">Top Level Domain:</span>{" "}
-                  {country.topLevelDomain?.join(", ")}
-                </p>
-                <p>
-                  <span className="font-semibold">Currencies:</span>{" "}
-                  {country.currencies?.map((cur) => cur.name).join(", ")}
-                </p>
-                <p>
-                  <span className="font-semibold">Languages:</span>{" "}
-                  {country.languages?.map((lang) => lang.name).join(", ")}
-                </p>
-              </div>
-            </div>
-
-            {/* Borders */}
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <span className="font-semibold text-sm whitespace-nowrap">
-                Border Countries:
-              </span>
-
-              <div className="flex flex-wrap gap-3">
-                {country.borders?.map((border, index) => (
-                  <button
-                    key={index}
-                    className="px-6 py-1 bg-white shadow rounded text-xs hover:scale-105 transition"
-                  >
-                    {border}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div>
+            <span>Border Countries: </span>
+            <span>{country.borders?.join(", ") || "None"}</span>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
