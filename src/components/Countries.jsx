@@ -1,42 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 
-const Countries = () => {
-  const [countries, setCountries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3",
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setCountries(data);
-      } catch (error) {
-        console.error("Fetch error:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCountries();
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-  if (error) {
-    return <p>{error}</p>;
+const Countries = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <p>No countries found.</p>;
   }
   return (
     <div className="grid gap-10 md:gap-14 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-      {countries.map((country) => {
+      {data.map((country) => {
         return (
           <Link
             to={`/country/${country.cca3}`}
