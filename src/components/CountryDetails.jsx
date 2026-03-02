@@ -4,9 +4,6 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 
 const CountryDetails = () => {
   const navigate = useNavigate();
-  const handleBackButton = () => {
-    navigate(-1);
-  };
   const { cca3 } = useParams();
 
   const [country, setCountry] = useState(null);
@@ -17,11 +14,9 @@ const CountryDetails = () => {
     const fetchCountries = async () => {
       try {
         const response = await fetch(
-          ` https://restcountries.com/v3.1/alpha/${cca3}`,
+          `https://restcountries.com/v3.1/alpha/${cca3}`,
         );
-        if (!response.ok) {
-          throw new Error("country not found");
-        }
+        if (!response.ok) throw new Error("Country not found");
         const data = await response.json();
         setCountry(data[0]);
       } catch (err) {
@@ -33,10 +28,9 @@ const CountryDetails = () => {
     fetchCountries();
   }, [cca3]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
-  if (!country) return <h2>Country not found</h2>;
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (error) return <div className="p-8 text-red-500">{error}</div>;
+  if (!country) return <h2 className="p-8">Country not found</h2>;
 
   const nativeName = country.name.nativeName
     ? Object.values(country.name.nativeName)[0].common
@@ -51,67 +45,109 @@ const CountryDetails = () => {
   const languages = country.languages
     ? Object.values(country.languages).join(", ")
     : "N/A";
+
   return (
-    <>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      {/* Back Button */}
       <button
-        className="flex space-x-2 items-center mb-10 shadow-lg px-6 py-3 "
-        onClick={handleBackButton}
+        className="flex items-center gap-2 shadow-md px-8 py-2 rounded-md mb-16 transition-transform hover:scale-105"
+        onClick={() => navigate(-1)}
       >
-        <IoIosArrowRoundBack />
+        <IoIosArrowRoundBack size={25} />
         <span>Back</span>
       </button>
 
-      <div>
-        <img src={country.flags?.svg} alt={country.name.common} />
-        <div>
-          <h3>{country.name.common}</h3>
-          <div>
-            <div>
-              <p>
-                <span> Native Name: </span>
-                <span>{nativeName}</span>
-              </p>
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+        {" "}
+        {/* Use items-start here */}
+        <img
+          src={country.flags?.svg}
+          alt={country.name.common}
+          className="w-full shadow-md rounded-sm"
+        />
+        <div className="py-2">
+          <h1 className="text-3xl font-extrabold mb-8">
+            {country.name.common}
+          </h1>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mb-12">
+            {/* Left Column */}
+            <div className="space-y-2">
               <p>
-                <span>Population: </span>
-                <span>{country.population?.toLocaleString()}</span>
+                <span className="font-semibold text-sm lg:text-base">
+                  Native Name:
+                </span>{" "}
+                {nativeName}
               </p>
               <p>
-                <span> Region:</span>
-                <span>{country.region}</span>
+                <span className="font-semibold text-sm lg:text-base">
+                  Population:
+                </span>{" "}
+                {country.population?.toLocaleString()}
               </p>
               <p>
-                <span> Sub Region: </span>
-                <span>{country.subregion}</span>
+                <span className="font-semibold text-sm lg:text-base">
+                  Region:
+                </span>{" "}
+                {country.region}
               </p>
-
               <p>
-                <span> Capital: </span>
-                <span>{country.capital?.[0]}</span>
+                <span className="font-semibold text-sm lg:text-base">
+                  Sub Region:
+                </span>{" "}
+                {country.subregion}
+              </p>
+              <p>
+                <span className="font-semibold text-sm lg:text-base">
+                  Capital:
+                </span>{" "}
+                {country.capital?.[0]}
               </p>
             </div>
-            <div>
+
+            {/* Right Column (The Zimbabwe Fix) */}
+            <div className="space-y-2">
               <p>
-                <span>Top Level Domain:</span>
-                <span>{country.tld?.join(", ")}</span>
+                <span className="font-semibold text-sm lg:text-base">
+                  Top Level Domain:
+                </span>{" "}
+                {country.tld?.join(", ")}
               </p>
               <p>
-                <span>Currencies:</span>
-                <span>{currencies}</span>
+                <span className="font-semibold text-sm lg:text-base">
+                  Currencies:
+                </span>{" "}
+                {currencies}
               </p>
-              <p>
-                <span>Languages:</span>
-                <span>{languages}</span>
+              <p className="wrap-break-word">
+                <span className="font-semibold text-sm lg:text-base">
+                  Languages:
+                </span>{" "}
+                {languages}
               </p>
             </div>
           </div>
-          <div>
-            <span>Border Countries: </span>
-            <span>{country.borders?.join(", ") || "None"}</span>
+
+          {/* Border Section */}
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+            <span className="font-semibold whitespace-nowrap">
+              Border Countries:
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {country.borders?.map((b) => (
+                <span
+                  key={b}
+                  className="shadow-sm border px-4 py-1 border-gray-300 rounded-sm text-sm min-w-20 text-center"
+                >
+                  {b}
+                </span>
+              )) || <span>None</span>}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
