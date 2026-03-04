@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
 const CountryDetails = () => {
@@ -106,7 +106,6 @@ const CountryDetails = () => {
               </p>
             </div>
 
-            {/* Right Column (The Zimbabwe Fix) */}
             <div className="space-y-2">
               <p>
                 <span className="font-semibold text-sm lg:text-base">
@@ -129,19 +128,19 @@ const CountryDetails = () => {
             </div>
           </div>
 
-          {/* Border Section */}
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
             <span className="font-semibold whitespace-nowrap">
               Border Countries:
             </span>
             <div className="flex flex-wrap gap-2">
               {country.borders?.map((b) => (
-                <span
+                <Link
+                  to={`/country/${b}`}
                   key={b}
                   className="shadow-sm border px-4 py-1 border-gray-300 rounded-sm text-sm min-w-20 text-center"
                 >
                   {b}
-                </span>
+                </Link>
               )) || <span>None</span>}
             </div>
           </div>
