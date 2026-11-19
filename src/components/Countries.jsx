@@ -10,18 +10,18 @@ const Countries = ({ data }) => {
       {data.map((country) => {
         return (
           <Link
-            to={`/country/${country.cca3}`}
-            key={country.cca3}
+            to={`/country/${country.codes.alpha_3}`}
+            key={country.codes.alpha_3}
             className="rounded-xl  shadow-md overflow-hidden w-full mx-auto  max-w-sm "
           >
             <img
-              src={country.flags?.svg}
+              src={country.flag?.url_svg}
               className=" w-full h-48 object-cover"
-              alt={`Flag of ${country.name.common}`}
+              alt={`Flag of ${country.names.common}`}
             />
             <div className="p-6 text-sm ">
               <h4 className="font-semibold text-lg mb-4">
-                {country.name.common}
+                {country.names.common}
               </h4>
               <p className="text-lg mb-1">
                 Population:{" "}
@@ -35,7 +35,10 @@ const Countries = ({ data }) => {
               </p>
               <p className="text-lg">
                 Capital:{" "}
-                <span className="text-gray-600"> {country.capital?.[0]} </span>
+                <span className="text-gray-600">
+                  {" "}
+                  {country.capitals?.[0]?.name ?? "N/A"}{" "}
+                </span>
               </p>
             </div>
           </Link>

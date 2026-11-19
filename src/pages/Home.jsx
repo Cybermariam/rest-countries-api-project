@@ -11,15 +11,13 @@ const Home = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,region,flags,population,capital,cca3",
-        );
+        const response = await fetch("/.netlify/functions/countries");
         if (!response.ok) {
           throw new Error("Failed to fetch");
         }
 
         const data = await response.json();
-        setCountries(data);
+        setCountries(data.data.objects);
       } catch (error) {
         console.log("Error fetching", error);
       } finally {
@@ -30,7 +28,7 @@ const Home = () => {
   }, []);
 
   const filteredCountries = countries.filter((country) => {
-    const commonName = country.name?.common?.toLowerCase();
+    const commonName = country.names?.common?.toLowerCase() ?? "";
     const matchesSearch = commonName.includes(search.toLowerCase());
     const matchesRegion = region
       ? country.region?.toLowerCase() === region.toLowerCase()

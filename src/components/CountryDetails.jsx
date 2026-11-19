@@ -11,39 +11,39 @@ const CountryDetails = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchCountry = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await fetch(
-          `https://restcountries.com/v3.1/alpha/${cca3}`,
+          `/.netlify/functions/country?code=${encodeURIComponent(cca3)}`,
         );
+
         if (!response.ok) throw new Error("Country not found");
         const data = await response.json();
-        setCountry(data[0]);
+        setCountry(data.data.objects[0] ?? null);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchCountries();
+    fetchCountry();
   }, [cca3]);
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-red-500">{error}</div>;
   if (!country) return <h2 className="p-8">Country not found</h2>;
-
-  const nativeName = country.name.nativeName
-    ? Object.values(country.name.nativeName)[0].common
+  const nativeName = country.names?.native
+    ? (Object.values(country.names.native)[0]?.common ?? "N/A")
     : "N/A";
 
-  const currencies = country.currencies
-    ? Object.values(country.currencies)
-        .map((c) => c.name)
-        .join(", ")
+  const currencies = country.currencies?.length
+    ? country.currencies.map((c) => c.name).join(", ")
     : "N/A";
 
-  const languages = country.languages
-    ? Object.values(country.languages).join(", ")
+  const languages = country.languages?.length
+    ? country.languages.map((language) => language.name).join(", ")
     : "N/A";
 
   return (
@@ -62,13 +62,13 @@ const CountryDetails = () => {
         {" "}
         {/* Use items-start here */}
         <img
-          src={country.flags?.svg}
-          alt={country.name.common}
+          src={country.flag?.url_svg}
+          alt={country.names.common}
           className="w-full shadow-md rounded-sm"
         />
         <div className="py-2">
           <h1 className="text-3xl font-extrabold mb-8">
-            {country.name.common}
+            {country.names.common}
           </h1>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mb-12">
@@ -84,25 +84,25 @@ const CountryDetails = () => {
                 <span className="font-semibold text-sm lg:text-base">
                   Population:
                 </span>{" "}
-                {country.population?.toLocaleString()}
+                {country.population?.toLocaleString() ?? "N/A"}
               </p>
               <p>
                 <span className="font-semibold text-sm lg:text-base">
                   Region:
                 </span>{" "}
-                {country.region}
+                {country.region ?? "N/A"}
               </p>
               <p>
                 <span className="font-semibold text-sm lg:text-base">
                   Sub Region:
                 </span>{" "}
-                {country.subregion}
+                {country.subregion ?? "N/A"}
               </p>
               <p>
                 <span className="font-semibold text-sm lg:text-base">
                   Capital:
                 </span>{" "}
-                {country.capital?.[0]}
+                {country.capitals?.[0]?.name ?? "N/A"}
               </p>
             </div>
 
@@ -111,7 +111,7 @@ const CountryDetails = () => {
                 <span className="font-semibold text-sm lg:text-base">
                   Top Level Domain:
                 </span>{" "}
-                {country.tld?.join(", ")}
+                {country.tlds?.join(", ") ?? "N/A"}
               </p>
               <p>
                 <span className="font-semibold text-sm lg:text-base">
@@ -133,15 +133,19 @@ const CountryDetails = () => {
               Border Countries:
             </span>
             <div className="flex flex-wrap gap-2">
-              {country.borders?.map((b) => (
-                <Link
-                  to={`/country/${b}`}
-                  key={b}
-                  className="shadow-sm border px-4 py-1 border-gray-300 rounded-sm text-sm min-w-20 text-center"
-                >
-                  {b}
-                </Link>
-              )) || <span>None</span>}
+              {country.borders?.length ? (
+                country.borders.map((border) => (
+                  <Link
+                    to={`/country/${border}`}
+                    key={border}
+                    className="shadow-sm border px-4 py-1 border-gray-300 rounded-sm text-sm min-w-20 text-center"
+                  >
+                    {border}
+                  </Link>
+                ))
+              ) : (
+                <span>None</span>
+              )}
             </div>
           </div>
         </div>
